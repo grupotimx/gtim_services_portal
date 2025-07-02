@@ -175,7 +175,7 @@
     <!-- Contenido principal -->
     <main class="col-md-10 p-4 bg-white">
       <section>
-        <h4 class="mb-3">Llamadas PBX</h4>
+        <h4 class="mb-3">PBX</h4>
 
         <div class="row g-2 align-items-end mb-4">
           <div class="col-md-2">
