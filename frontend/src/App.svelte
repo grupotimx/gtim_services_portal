@@ -14,8 +14,13 @@
   let grupoTimbrado = '';
   let chartData = { labels: [], datasets: [] };
   let loading = false;
+  let mostrarModal = true;
 
   Chart.register(ChartDataLabels);
+
+  function cerrarModal() {
+    mostrarModal = false;
+  }
 
   async function cargarDatos() {
     loading = true;
@@ -85,7 +90,7 @@
       console.error('Error al cargar los datos:', error);
     } finally {
       loading = false;
-      await tick(); // Esperar a que el canvas esté en el DOM
+      await tick();
       if (canvas) renderChart();
     }
   }
@@ -219,14 +224,12 @@
             </div>
           {:else}
             {#if tipoGrafica === 'diaria' && (chartType === 'bar' || chartType === 'line')}
-              <!-- Solo para gráfica diaria en barras o línea -->
               <div style="overflow-x: auto;">
                 <div style="min-width: 1000px; width: 3200px;">
                   <canvas bind:this={canvas} style="width: 100%; height: 450px;"></canvas>
                 </div>
               </div>
             {:else}
-              <!-- Todas las demás gráficas sin scroll -->
               <canvas bind:this={canvas} style="width: 100%; height: 450px;"></canvas>
             {/if}
           {/if}
@@ -236,6 +239,23 @@
       <footer class="text-end mt-4 text-muted">
         www.grupotimexico.com
       </footer>
+
+      <!-- Modal de bienvenida -->
+      {#if mostrarModal}
+        <div class="modal fade show d-block" tabindex="-1" aria-modal="true" role="dialog" style="background-color: rgba(0, 0, 0, 0.5);">
+          <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content shadow">
+              <div class="modal-header">
+                <h5 class="modal-title">¡Bienvenido!</h5>
+                <button type="button" class="btn-close" on:click={cerrarModal}></button>
+              </div>
+              <div class="modal-body">
+                <p>Gracias por visitar el portal de servicios administrados de GTIM.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      {/if}
     </main>
   </div>
 </div>
