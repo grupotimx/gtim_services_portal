@@ -14,13 +14,24 @@
   let grupoTimbrado = '';
   let chartData = { labels: [], datasets: [] };
   let loading = false;
-  let mostrarModal = true;
+
+  // Login
+  let usuario = '';
+  let contrasena = '';
+  let logueado = false;
+  let errorLogin = false;
+
+  function login() {
+    if (usuario === 'admin' && contrasena === 'admin') {
+      logueado = true;
+      errorLogin = false;
+      cargarDatos();
+    } else {
+      errorLogin = true;
+    }
+  }
 
   Chart.register(ChartDataLabels);
-
-  function cerrarModal() {
-    mostrarModal = false;
-  }
 
   async function cargarDatos() {
     loading = true;
@@ -57,23 +68,17 @@
       if (tipoGrafica === 'mensual') {
         chartData = {
           labels: result.map(r => r.mes),
-          datasets: [
-            { label: 'Llamadas por mes', data: result.map(r => r.total), backgroundColor: '#007bff' }
-          ]
+          datasets: [{ label: 'Llamadas por mes', data: result.map(r => r.total), backgroundColor: '#007bff' }]
         };
       } else if (tipoGrafica.includes('agente')) {
         chartData = {
           labels: result.map(r => r.extension),
-          datasets: [
-            { label: 'Llamadas por agente', data: result.map(r => r.total), backgroundColor: '#28a745' }
-          ]
+          datasets: [{ label: 'Llamadas por agente', data: result.map(r => r.total), backgroundColor: '#28a745' }]
         };
       } else if (tipoGrafica === 'duracion') {
         chartData = {
           labels: result.map(r => r.extension),
-          datasets: [
-            { label: 'Duración promedio', data: result.map(r => Math.round(r.promedio)), backgroundColor: '#ffc107' }
-          ]
+          datasets: [{ label: 'Duración promedio', data: result.map(r => Math.round(r.promedio)), backgroundColor: '#ffc107' }]
         };
       } else {
         chartData = {
@@ -110,9 +115,7 @@
             display: context => context.datasetIndex === chartData.datasets.length - 1,
             formatter: (value, context) => {
               if (tipoGrafica === 'duracion') {
-                return value >= 60
-                  ? `${Math.round(value / 60)} min`
-                  : `${Math.round(value)} segs`;
+                return value >= 60 ? `${Math.round(value / 60)} min` : `${Math.round(value)} segs`;
               } else {
                 const index = context.dataIndex;
                 const datasets = context.chart.data.datasets;
@@ -150,19 +153,31 @@
     cargarDatos();
   }
 
-  onMount(cargarDatos);
+  onMount(() => {
+    if (logueado) cargarDatos();
+  });
 </script>
 
-<!-- HTML del Portal -->
+{#if !logueado}
+  <div class="min-vh-100 d-flex justify-content-center align-items-center bg-light">
+    <div class="card p-4 shadow" style="width: 300px;">
+      <h5 class="mb-3 text-center">Iniciar sesión</h5>
+      <input class="form-control mb-2" placeholder="Usuario" bind:value={usuario} />
+      <input class="form-control mb-3" placeholder="Contraseña" type="password" bind:value={contrasena} />
+      {#if errorLogin}
+        <div class="text-danger text-center mb-2">Credenciales incorrectas</div>
+      {/if}
+      <button class="btn btn-primary w-100" on:click={login}>Entrar</button>
+    </div>
+  </div>
+{:else}
 <div class="container-fluid min-vh-100 bg-light p-0">
-  <!-- HEADER SUPERIOR -->
   <header class="d-flex justify-content-between align-items-center px-4 py-2 bg-light border-bottom">
     <h2 class="fw-bold mb-0" style="font-size: 1.5rem; color: #1a237e;">Portal de Servicios Administrados</h2>
     <img src="/logo.png" alt="Logo GTIM" class="img-fluid" style="height: 50px;" />
   </header>
 
   <div class="row g-0">
-    <!-- Menú lateral -->
     <aside class="col-md-2 bg-white border-end p-3">
       <h4 class="mb-4">Menú</h4>
       <ul class="nav flex-column">
@@ -172,7 +187,6 @@
       </ul>
     </aside>
 
-    <!-- Contenido principal -->
     <main class="col-md-10 p-4 bg-white">
       <section>
         <h4 class="mb-3">PBX</h4>
@@ -239,26 +253,10 @@
       <footer class="text-end mt-4 text-muted">
         www.grupotimexico.com
       </footer>
-
-      <!-- Modal de bienvenida -->
-      {#if mostrarModal}
-        <div class="modal fade show d-block" tabindex="-1" aria-modal="true" role="dialog" style="background-color: rgba(0, 0, 0, 0.5);">
-          <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content shadow">
-              <div class="modal-header">
-                <h5 class="modal-title">¡Bienvenido!</h5>
-                <button type="button" class="btn-close" on:click={cerrarModal}></button>
-              </div>
-              <div class="modal-body">
-                <p>Gracias por visitar el portal de servicios administrados de GTIM.</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      {/if}
     </main>
   </div>
 </div>
+{/if}
 
 <style>
   :global(body) {
