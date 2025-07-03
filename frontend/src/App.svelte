@@ -159,103 +159,115 @@
 </script>
 
 {#if !logueado}
-  <div class="min-vh-100 d-flex justify-content-center align-items-center bg-light">
-    <div class="card p-4 shadow" style="width: 300px;">
-      <h5 class="mb-3 text-center">Iniciar sesión</h5>
-      <input class="form-control mb-2" placeholder="Usuario" bind:value={usuario} />
-      <input class="form-control mb-3" placeholder="Contraseña" type="password" bind:value={contrasena} />
-      {#if errorLogin}
-        <div class="text-danger text-center mb-2">Credenciales incorrectas</div>
-      {/if}
-      <button class="btn btn-primary w-100" on:click={login}>Entrar</button>
+  <div class="container-fluid min-vh-100 bg-light p-0">
+    <header class="d-flex justify-content-between align-items-center px-4 py-2 bg-light border-bottom">
+      <h2 class="fw-bold mb-0" style="font-size: 1.5rem; color: #1a237e;">Portal de Servicios Administrados</h2>
+      <img src="/logo.png" alt="Logo GTIM" class="img-fluid" style="height: 50px;" />
+    </header>
+
+    <div class="d-flex justify-content-center align-items-center" style="height: calc(100vh - 120px);">
+      <div class="card p-4 shadow" style="width: 300px;">
+        <h5 class="mb-3 text-center">Iniciar sesión</h5>
+        <input class="form-control mb-2" placeholder="Usuario" bind:value={usuario} />
+        <input class="form-control mb-3" placeholder="Contraseña" type="password" bind:value={contrasena} />
+        {#if errorLogin}
+          <div class="text-danger text-center mb-2">Credenciales incorrectas</div>
+        {/if}
+        <button class="btn btn-primary w-100" on:click={login}>Entrar</button>
+      </div>
     </div>
+
+    <footer class="text-end text-muted px-4 py-2 border-top">
+      www.grupotimexico.com
+    </footer>
   </div>
 {:else}
-<div class="container-fluid min-vh-100 bg-light p-0">
-  <header class="d-flex justify-content-between align-items-center px-4 py-2 bg-light border-bottom">
-    <h2 class="fw-bold mb-0" style="font-size: 1.5rem; color: #1a237e;">Portal de Servicios Administrados</h2>
-    <img src="/logo.png" alt="Logo GTIM" class="img-fluid" style="height: 50px;" />
-  </header>
+  <!-- Portal completo -->
+  <div class="container-fluid min-vh-100 bg-light p-0">
+    <header class="d-flex justify-content-between align-items-center px-4 py-2 bg-light border-bottom">
+      <h2 class="fw-bold mb-0" style="font-size: 1.5rem; color: #1a237e;">Portal de Servicios Administrados</h2>
+      <img src="/logo.png" alt="Logo GTIM" class="img-fluid" style="height: 50px;" />
+    </header>
 
-  <div class="row g-0">
-    <aside class="col-md-2 bg-white border-end p-3">
-      <h4 class="mb-4">Menú</h4>
-      <ul class="nav flex-column">
-        <li class="nav-item">
-          <a class="nav-link active" href="#">Inicio</a>
-        </li>
-      </ul>
-    </aside>
+    <div class="row g-0">
+      <aside class="col-md-2 bg-white border-end p-3">
+        <h4 class="mb-4">Menú</h4>
+        <ul class="nav flex-column">
+          <li class="nav-item">
+            <a class="nav-link active" href="#">Inicio</a>
+          </li>
+        </ul>
+      </aside>
 
-    <main class="col-md-10 p-4 bg-white">
-      <section>
-        <h4 class="mb-3">PBX</h4>
+      <main class="col-md-10 p-4 bg-white">
+        <section>
+          <h4 class="mb-3">PBX</h4>
 
-        <div class="row g-2 align-items-end mb-4">
-          <div class="col-md-2">
-            <label class="form-label">Fecha Inicio</label>
-            <input type="date" bind:value={fechaInicio} class="form-control" />
-          </div>
-          <div class="col-md-2">
-            <label class="form-label">Fecha Fin</label>
-            <input type="date" bind:value={fechaFin} class="form-control" />
-          </div>
-          <div class="col-md-3">
-            <label class="form-label">Grupo Timbrado</label>
-            <input type="text" bind:value={grupoTimbrado} class="form-control" />
-          </div>
-          <div class="col-md-3">
-            <label class="form-label">Tipo de Gráfica</label>
-            <select bind:value={tipoGrafica} class="form-select">
-              <option value="diaria">Gráfica diaria</option>
-              <option value="mensual">Gráfica mensual</option>
-              <option value="por_agente">Por agente (contestadas)</option>
-              <option value="por_agente_no">Por agente (no contestadas)</option>
-              <option value="duracion">Duración por agente</option>
-            </select>
-          </div>
-          <div class="col-md-1">
-            <label class="form-label">Tipo</label>
-            <select bind:value={chartType} class="form-select">
-              <option value="bar">Barras</option>
-              <option value="line">Línea</option>
-              <option value="pie">Pastel</option>
-              <option value="doughnut">Dona</option>
-              <option value="radar">Radar</option>
-            </select>
-          </div>
-          <div class="col-md-1 d-grid">
-            <button class="btn btn-outline-primary" on:click={actualizarGrafica}>Filtrar</button>
-          </div>
-        </div>
-
-        <div class="overflow-auto">
-          {#if loading}
-            <div class="text-center my-4">
-              <div class="spinner-border text-primary" role="status">
-                <span class="visually-hidden">Cargando...</span>
-              </div>
+          <div class="row g-2 align-items-end mb-4">
+            <div class="col-md-2">
+              <label class="form-label">Fecha Inicio</label>
+              <input type="date" bind:value={fechaInicio} class="form-control" />
             </div>
-          {:else}
-            {#if tipoGrafica === 'diaria' && (chartType === 'bar' || chartType === 'line')}
-              <div style="overflow-x: auto;">
-                <div style="min-width: 1000px; width: 3200px;">
-                  <canvas bind:this={canvas} style="width: 100%; height: 450px;"></canvas>
+            <div class="col-md-2">
+              <label class="form-label">Fecha Fin</label>
+              <input type="date" bind:value={fechaFin} class="form-control" />
+            </div>
+            <div class="col-md-3">
+              <label class="form-label">Grupo Timbrado</label>
+              <input type="text" bind:value={grupoTimbrado} class="form-control" />
+            </div>
+            <div class="col-md-3">
+              <label class="form-label">Tipo de Gráfica</label>
+              <select bind:value={tipoGrafica} class="form-select">
+                <option value="diaria">Gráfica diaria</option>
+                <option value="mensual">Gráfica mensual</option>
+                <option value="por_agente">Por agente (contestadas)</option>
+                <option value="por_agente_no">Por agente (no contestadas)</option>
+                <option value="duracion">Duración por agente</option>
+              </select>
+            </div>
+            <div class="col-md-1">
+              <label class="form-label">Tipo</label>
+              <select bind:value={chartType} class="form-select">
+                <option value="bar">Barras</option>
+                <option value="line">Línea</option>
+                <option value="pie">Pastel</option>
+                <option value="doughnut">Dona</option>
+                <option value="radar">Radar</option>
+              </select>
+            </div>
+            <div class="col-md-1 d-grid">
+              <button class="btn btn-outline-primary" on:click={actualizarGrafica}>Filtrar</button>
+            </div>
+          </div>
+
+          <div class="overflow-auto">
+            {#if loading}
+              <div class="text-center my-4">
+                <div class="spinner-border text-primary" role="status">
+                  <span class="visually-hidden">Cargando...</span>
                 </div>
               </div>
             {:else}
-              <canvas bind:this={canvas} style="width: 100%; height: 450px;"></canvas>
+              {#if tipoGrafica === 'diaria' && (chartType === 'bar' || chartType === 'line')}
+                <div style="overflow-x: auto;">
+                  <div style="min-width: 1000px; width: 3200px;">
+                    <canvas bind:this={canvas} style="width: 100%; height: 450px;"></canvas>
+                  </div>
+                </div>
+              {:else}
+                <canvas bind:this={canvas} style="width: 100%; height: 450px;"></canvas>
+              {/if}
             {/if}
-          {/if}
-        </div>
-      </section>
+          </div>
+        </section>
 
-      <footer class="text-end mt-4 text-muted">
-        www.grupotimexico.com
-      </footer>
-    </main>
+        <footer class="text-end mt-4 text-muted">
+          www.grupotimexico.com
+        </footer>
+      </main>
+    </div>
   </div>
-</div>
 {/if}
 
 <style>
